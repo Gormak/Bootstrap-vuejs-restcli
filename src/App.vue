@@ -37,7 +37,12 @@
             logout() {
 				this.authenticated = false
                 localStorage.setItem('authenticated', '0')
-            }
+            },
+			goBack () {
+			  window.history.length > 1
+				? this.$router.go(-1)
+				: this.$router.push('/')
+			}
         }
     }
 </script>

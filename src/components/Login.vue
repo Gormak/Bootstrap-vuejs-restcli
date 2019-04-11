@@ -28,7 +28,7 @@ export default {
 			localStorage.setItem('storedData', response.data.token)
 			localStorage.setItem('authenticated', '1')
 			this.$emit("authenticated", true);
-            this.$router.replace({ name: 'secure' })
+            this.$router.replace({ name: 'hello' })
 			console.log(response.data.token)
 		}).catch(error => {
 			console.log(error)

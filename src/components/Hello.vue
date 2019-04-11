@@ -1,37 +1,98 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-      <br>
-      <li><a href="http://vuejs-templates.github.io/webpack/" target="_blank">Docs for This Template</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
+	
+	<p>{{ result }}</p>
+	<p><qrcode-vue :value="value" :size="size" level="H"></qrcode-vue></p>
+	
+    <p id="home" class="active">
+		<b-button v-b-modal.popupSession>Join the session (Team member)</b-button>
+		<b-button v-b-modal.popupJoin>New Session (Coach)</b-button>
+		<b-button v-b-modal.popupResults>Show results</b-button>
+	</p>
+	
+	<b-modal id="popupJoin" title="Give a name to your team :" @ok="handleJoin">
+		<form @submit.stop.prevent="handleSubmit">
+			<b-form-input id="join" v-model="join" required placeholder="Team name"></b-form-input>
+		</form>
+	</b-modal>
+	
+	<b-modal id="popupSession" title="Enter the session token :" @ok="handleSession">
+		<form @submit.stop.prevent="handleSubmit">
+			<b-form-input id="session" v-model="session" required placeholder="Token"></b-form-input>
+		</form>
+	</b-modal>
+	
+	<b-modal id="popupResults" title="Enter the session token :" @ok="handleResult">
+		<form @submit.stop.prevent="handleSubmit">
+			<b-form-input id="result" v-model="result" required placeholder="Token"></b-form-input>
+		</form>
+	</b-modal>
+	
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+import QrcodeVue from 'qrcode.vue';
+
 export default {
   name: 'hello',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+		join: '',
+		session: '',
+		result: '',
+		msg: 'Welcome !',
+		result: '',
+		value: 'https://example.com',
+		size: 250
     }
+  },
+  methods: {
+	handleJoin(evt) {
+		//evt.preventDefault()
+		if (!this.join) {
+		  alert('Please enter your name')
+		} else {
+		  this.handleSubmit('join')
+		}
+    },
+	handleSession(evt) {
+		if (!this.session) {
+		  alert('Please enter your token')
+		} else {
+		  this.handleSubmit('session')
+		}
+	},
+	handleResult(evt) {
+		if (!this.result) {
+		  alert('Please enter your token')
+		} else {
+		  this.handleSubmit('result')
+		}
+	},
+	handleSubmit(send) {
+		if(send == 'join') {
+			if(localStorage.getItem('authenticated') == 0) {
+				this.$router.replace({ name: "login" })
+			} else {
+				axios.post('http://192.168.55.55/api/v1/sessions?token='+localStorage.getItem('storedData'), {name: this.join})
+				.then(response => (this.result = 'The token acces for the team '+response.data.name+' is: '+response.data.session_key))
+			}
+		}
+		else if(send == 'session') this.msg = 'session'
+		else if(send == 'result') this.msg = 'result'
+		else this.msg = 'none'
+	}
+  },
+  components: {
+    QrcodeVue
   }
 }
+
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h1, h2 {
   font-weight: normal;
