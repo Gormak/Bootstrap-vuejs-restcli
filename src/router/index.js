@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Login from '@/components/Login'
 import Secure from '@/components/Secure'
 import Hello from '@/components/Hello'
+import Session from '@/components/Session'
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ export default new Router({
       path: '/secure',
       name: 'secure',
       component: Secure
+    },
+	{
+      path: '/session',
+      name: 'session',
+      component: Session
     }
   ]
 })

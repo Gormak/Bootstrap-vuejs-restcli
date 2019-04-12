@@ -3,7 +3,7 @@
     <h1>{{ msg }}</h1>
 	
 	<p>{{ result }}</p>
-	<p><qrcode-vue :value="value" :size="size" level="H"></qrcode-vue></p>
+	<p><qrcode-vue v-if="value !== ''" :value="value" :size="size" level="H"></qrcode-vue></p>
 	
     <p id="home" class="active">
 		<b-button v-b-modal.popupSession>Join the session (Team member)</b-button>
@@ -45,7 +45,7 @@ export default {
 		result: '',
 		msg: 'Welcome !',
 		result: '',
-		value: 'https://example.com',
+		value: '',
 		size: 250
     }
   },
@@ -73,15 +73,24 @@ export default {
 		}
 	},
 	handleSubmit(send) {
+		localStorage.setItem('page', 'hello')
 		if(send == 'join') {
 			if(localStorage.getItem('authenticated') == 0) {
 				this.$router.replace({ name: "login" })
 			} else {
 				axios.post('http://192.168.55.55/api/v1/sessions?token='+localStorage.getItem('storedData'), {name: this.join})
-				.then(response => (this.result = 'The token acces for the team '+response.data.name+' is: '+response.data.session_key))
+				.then(response => (
+					this.result = 'The token acces for the team '+response.data.name+' is: '+response.data.session_key, 
+					this.value = document.location.origin+'/'+response.data.session_key))
 			}
 		}
-		else if(send == 'session') this.msg = 'session'
+		else if(send == 'session') {
+			if(localStorage.getItem('authenticated') == 0) {
+				this.$router.replace({ name: "login" })
+			} else {
+				this.$router.push({ path: 'session', query: { token: this.session } })
+			}
+		}
 		else if(send == 'result') this.msg = 'result'
 		else this.msg = 'none'
 	}
@@ -94,20 +103,6 @@ export default {
 </script>
 
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
 a {
   color: #42b983;
 }

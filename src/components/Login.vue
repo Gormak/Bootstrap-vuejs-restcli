@@ -28,7 +28,7 @@ export default {
 			localStorage.setItem('storedData', response.data.token)
 			localStorage.setItem('authenticated', '1')
 			this.$emit("authenticated", true);
-            this.$router.replace({ name: 'hello' })
+            this.$router.replace({ name: localStorage.getItem('page') })
 			console.log(response.data.token)
 		}).catch(error => {
 			console.log(error)
@@ -43,11 +43,6 @@ export default {
 
 <style scoped>
     #login {
-        width: 500px;
-        border: 1px solid #CCCCCC;
-        background-color: #FFFFFF;
-        margin: auto;
-        margin-top: 200px;
-        padding: 20px;
+		
     }
 </style>

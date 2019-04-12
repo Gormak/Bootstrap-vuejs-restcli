@@ -16,6 +16,7 @@
       },
 	  mounted () {
 		if(localStorage.getItem('authenticated') == 0) {
+			localStorage.setItem('page', 'secure')
 			this.$router.replace({ name: "login" });
 		}
 	  }
@@ -24,9 +25,6 @@
 
 <style scoped>
     #secure {
-        background-color: #FFFFFF;
-        border: 1px solid #CCCCCC;
-        padding: 20px;
-        margin-top: 10px;
+	
     }
 </style>
