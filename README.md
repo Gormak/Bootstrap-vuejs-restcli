@@ -9,7 +9,7 @@ Bootstrap Vue.js Rest client Axios --> Rest Cli for https://github.com/Gormak/va
 
 Ensure Vue CLI is installed and up to date
 ```
-npm i -g vue-cli
+sudo npm i -g vue-cli
 ```
 
 Clone the repo
